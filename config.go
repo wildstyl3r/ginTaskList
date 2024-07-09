@@ -1,8 +1,11 @@
 package main
 
 type Config struct {
-	username string
-	password string
-	host     string
-	port     string
+	Database struct {
+		Username string
+		Password string
+		Host     string
+		Port     string
+		DBname   string
+	}
 }
