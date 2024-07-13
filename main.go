@@ -1,18 +1,26 @@
 package main
 
 import (
-	"log"
-
-	"github.com/BurntSushi/toml"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
 func main() {
+	viper.SetEnvPrefix("POSTGRES")
+	viper.BindEnv("HOST")
+	viper.BindEnv("USER")
+	viper.BindEnv("PASSWORD")
+	viper.BindEnv("PORT")
 	var config Config
-	_, err := toml.DecodeFile("config.toml", &config)
-	if err != nil {
-		log.Fatal(err)
-	}
+	config.Database.Host = viper.GetString("HOST")
+	config.Database.Port = viper.GetString("PORT")
+	config.Database.Username = viper.GetString("USER")
+	config.Database.Password = viper.GetString("PASSWORD")
+	config.Database.DBname = viper.GetString("USER")
+	// _, err := toml.DecodeFile("config.toml", &config)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
 	app := NewApp(config)
 
@@ -23,5 +31,5 @@ func main() {
 	r.PUT("/tasks/:id/start", app.startTaskById)
 	r.PUT("/tasks/:id/cancel", app.cancelTaskById)
 	r.PUT("/tasks/:id/complete", app.completeTaskById)
-	r.Run("localhost:8883")
+	r.Run()
 }
