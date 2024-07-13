@@ -15,7 +15,11 @@ func (a *App) startTaskById(c *gin.Context) {
 		return
 	}
 	var task Task
-	a.db().First(&task, id)
+	result := a.db().First(&task, id)
+	if result.Error != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "not found"})
+		return
+	}
 	if task.Started != nil {
 		c.IndentedJSON(http.StatusConflict, task)
 		return
@@ -33,7 +37,11 @@ func (a *App) cancelTaskById(c *gin.Context) {
 		return
 	}
 	var task Task
-	a.db().First(&task, id)
+	result := a.db().First(&task, id)
+	if result.Error != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "not found"})
+		return
+	}
 	if task.Cancelled != nil {
 		c.IndentedJSON(http.StatusConflict, task)
 		return
@@ -51,7 +59,11 @@ func (a *App) completeTaskById(c *gin.Context) {
 		return
 	}
 	var task Task
-	a.db().First(&task, id)
+	result := a.db().First(&task, id)
+	if result.Error != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "not found"})
+		return
+	}
 	if task.Completed != nil {
 		c.IndentedJSON(http.StatusConflict, task)
 		return
@@ -69,6 +81,10 @@ func (a *App) getTaskById(c *gin.Context) {
 		return
 	}
 	var task Task
-	a.db().First(&task, id)
+	result := a.db().First(&task, id)
+	if result.Error != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "not found"})
+		return
+	}
 	c.IndentedJSON(http.StatusOK, task)
 }
