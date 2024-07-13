@@ -1,0 +1,31 @@
+services:
+  app:
+    depends_on:
+      - db
+    build:
+      context: .
+    container_name: rest-server
+    hostname: rest-server
+    ports:
+      - 8883:8080
+    environment:
+      POSTGRES_USER: gotaskman
+      POSTGRES_HOST: db
+      POSTGRES_PASSWORD: ${PGPASSWORD:?db password not set}
+      POSTGRES_PORT: 5432
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  db:
+    image: postgres
+    container_name: postgres
+    hostname: db
+    restart: always
+    volumes:
+      - gotasker-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: gotaskman
+      POSTGRES_PASSWORD: dev
+volumes:
+  gotasker-data:
